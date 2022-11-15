@@ -38,6 +38,12 @@ app.get("/api/persons/:id", (req, res) => {
   const person = phonebook.find((contact) => `${contact.id}` === req.params.id);
   person ? res.json(person) : res.status(404).end();
 });
+
+app.delete("/api/persons/:id", (req, res) => {
+    phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
+    res.status(204).end();
+  })
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
