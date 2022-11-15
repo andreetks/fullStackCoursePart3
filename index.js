@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 const app = express();
 
 const phonebook = [
@@ -24,16 +24,20 @@ const phonebook = [
   },
 ];
 
-app.get("/api/persons", (req, res) => {
-  res.json(phonebook);
-});
-
 app.get("/info", (req, res) => {
   const date = new Date();
   const response = `<p>Phonebook has info for ${phonebook.length} people</p><p>${date}</p>`;
   res.send(response);
 });
 
+app.get("/api/persons", (req, res) => {
+  res.json(phonebook);
+});
+
+app.get("/api/persons/:id", (req, res) => {
+  const person = phonebook.find((contact) => `${contact.id}` === req.params.id);
+  person ? res.json(person) : res.status(404).end();
+});
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
