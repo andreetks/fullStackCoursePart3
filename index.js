@@ -47,8 +47,15 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  if (request.body.name === undefined || request.body.number === undefined) {
-    response.status(400).json({ error: "There are missing fields" });
+  if (!request.body.name || !request.body.number) {
+    response.status(400).json({ error: "Name or Number are missing" });
+  } else if (
+    phonebook.some(
+      (contact) =>
+        contact.name === req.body.name || contact.number === req.body.number
+    )
+  ) {
+    response.status(400).json({ error: "This contact already exist" });
   } else {
     const newContact = {
       id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
