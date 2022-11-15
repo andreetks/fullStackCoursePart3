@@ -6,7 +6,7 @@ const app = express();
 app.use(morgan('tiny'))
 app.use(express.json());
 
-const phonebook = [
+var phonebook = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -50,15 +50,15 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  if (!request.body.name || !request.body.number) {
-    response.status(400).json({ error: "Name or Number are missing" });
+  if (!req.body.name || !req.body.number) {
+    res.status(400).json({ error: "Name or Number are missing" });
   } else if (
     phonebook.some(
       (contact) =>
         contact.name === req.body.name || contact.number === req.body.number
     )
   ) {
-    response.status(400).json({ error: "This contact already exist" });
+    res.status(400).json({ error: "This contact already exist" });
   } else {
     const newContact = {
       id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
