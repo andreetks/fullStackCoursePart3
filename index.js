@@ -1,6 +1,8 @@
 import express, { response } from "express";
 const app = express();
 
+app.use(express.json());
+
 const phonebook = [
   {
     id: 1,
@@ -40,9 +42,23 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-    phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
-    res.status(204).end();
-  })
+  phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
+  res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  if (request.body.name === undefined || request.body.number === undefined) {
+    response.status(400).json({ error: "There are missing fields" });
+  } else {
+    const newContact = {
+      id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
+      name: req.body.name,
+      number: req.body.number,
+    };
+    phonebook = phonebook.concat(newContact);
+    res.send(newContact);
+  }
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
