@@ -1,5 +1,5 @@
 Fullstack Open 2020 - Part 3
-url-to-online
+https://lionfish-app-cpxa4.ondigitalocean.app/
 
 This repository contains the backend. 
 Front-end is located at:
