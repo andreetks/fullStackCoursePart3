@@ -57,7 +57,10 @@ app.get("/api/persons/:id", (req, res) => {
 
 app.delete("/api/persons/:id", (req, res) => {
   phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
-  res.status(204).end();
+  Person.findByIdAndRemove(req.params.id).then(result=>{
+    console.log(result)
+    res.status(204).end();
+  })
 });
 
 app.post("/api/persons", (req, res) => {
