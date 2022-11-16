@@ -77,6 +77,22 @@ app.post("/api/persons", (req, res, next) => {
   }
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  if (!req.body.name || !req.body.number) {
+    res.status(400).json({ error: "Name or Number are missing" });
+  } else {
+    const updatedContact = new Person({
+      name: req.body.name,
+      number: req.body.number,
+    });
+    Person.findByIdAndUpdate(req.params.id, updatedContact)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((error) => next(error));
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
