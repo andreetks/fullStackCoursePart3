@@ -46,12 +46,17 @@ app.get("/api/persons", (req, res, next) => {
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-  const person = phonebook.find((contact) => `${contact.id}` === req.params.id);
-  person ? res.json(person) : res.status(404).end();
+  Person.find({ _id: req.params.id })
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(404).end();
+      next(error)
+    });
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
-  phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
   Person.findByIdAndRemove(req.params.id)
     .then((result) => {
       console.log(result);
