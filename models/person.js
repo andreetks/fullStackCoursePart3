@@ -9,7 +9,25 @@ mongoose.connect(url);
 const phonebookSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true, minLength: 3 },
-    number: { type: String, unique: true },
+    number: {
+      type: String,
+      unique: true,
+      minLength: 8,
+      validate: {
+        validator: (value) => {
+          let flag = true;
+          if (
+            value.split("-").length > 2 ||
+            value.split("-")[0].length > 3 ||
+            value.split("-")[0].length < 2 
+          ) {
+            flag = !flag;
+          }
+          return flag;
+        },
+        message: (props) => `${props.value} is not a valid phone number!`
+      },
+    },
   },
   { versionKey: false }
 );
