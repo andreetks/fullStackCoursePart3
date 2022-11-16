@@ -14,6 +14,15 @@ app.use(
     ":method :url :status :res[content-length] - :response-time ms :content"
   )
 );
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError" && error.message.includes("ObjectId")) {
+    return res.status(400).send({ error: "Malformed ID" });
+  }
+  next(error);
+};
+app.use(errorHandler);
 
 var phonebook = [
   {
@@ -38,32 +47,36 @@ var phonebook = [
   },
 ];
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
   const date = new Date();
   const response = `<p>Phonebook has info for ${phonebook.length} people</p><p>${date}</p>`;
   res.send(response);
 });
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then((result) => {
-    res.json(result.map((person) => person.toJSON()));
-  });
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then((result) => {
+      res.json(result.map((person) => person.toJSON()));
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const person = phonebook.find((contact) => `${contact.id}` === req.params.id);
   person ? res.json(person) : res.status(404).end();
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   phonebook = phonebook.filter((contact) => `${contact.id}` !== req.params.id);
-  Person.findByIdAndRemove(req.params.id).then(result=>{
-    console.log(result)
-    res.status(204).end();
-  })
+  Person.findByIdAndRemove(req.params.id)
+    .then((result) => {
+      console.log(result);
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   if (!req.body.name || !req.body.number) {
     res.status(400).json({ error: "Name or Number are missing" });
   } else {
@@ -73,9 +86,12 @@ app.post("/api/persons", (req, res) => {
     });
     // phonebook = phonebook.concat(newContact);
     // res.send(newContact);
-    newContact.save().then((response) => {
-      res.json(response);
-    });
+    newContact
+      .save()
+      .then((response) => {
+        res.json(response);
+      })
+      .catch((error) => next(error));
   }
 });
 
