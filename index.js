@@ -52,7 +52,7 @@ app.get("/api/persons/:id", (req, res, next) => {
     })
     .catch((error) => {
       res.status(404).end();
-      next(error)
+      next(error);
     });
 });
 
@@ -69,7 +69,7 @@ app.post("/api/persons", (req, res, next) => {
   if (!req.body.name || !req.body.number) {
     res.status(400).json({ error: "Name or Number are missing" });
   } else if( req.body.name.length < 3) {
-    res.status(400).json({ error: "Name is too short."})
+    res.status(400).json({ error: "Name is too short."});
   } else {
     const newContact = new Person({
       name: req.body.name,
