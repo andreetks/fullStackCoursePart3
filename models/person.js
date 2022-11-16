@@ -16,16 +16,20 @@ const phonebookSchema = new mongoose.Schema(
       validate: {
         validator: (value) => {
           let flag = true;
-          if (
-            value.split("-").length > 2 ||
-            value.split("-")[0].length > 3 ||
-            value.split("-")[0].length < 2 
-          ) {
-            flag = !flag;
-          }
+
+          if (value.includes("-")) {
+            if (
+              value.split("-").length > 2 ||
+              value.split("-")[0].length > 3 ||
+              value.split("-")[0].length < 2 ||
+              value.length < 9
+            ) {
+              flag = !flag;
+            }
+          } 
           return flag;
         },
-        message: (props) => `${props.value} is not a valid phone number!`
+        message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
   },
