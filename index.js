@@ -1,12 +1,13 @@
 import express from "express";
 import morgan from "morgan";
-import cors from "cors"
-import Person from "./models/person.js"
+import cors from "cors";
+import Person from "./models/person.js";
 
 const app = express();
 
-app.use(cors())
-app.use(express.static('build'));
+app.use(cors());
+app.use(express.json());
+app.use(express.static("build"));
 morgan.token("content", (req, res) => JSON.stringify(req.body));
 app.use(
   morgan(
@@ -45,7 +46,7 @@ app.get("/info", (req, res) => {
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((result) => {
-    res.json(result.map(person => person.toJSON()))
+    res.json(result.map((person) => person.toJSON()));
   });
 });
 
@@ -62,21 +63,16 @@ app.delete("/api/persons/:id", (req, res) => {
 app.post("/api/persons", (req, res) => {
   if (!req.body.name || !req.body.number) {
     res.status(400).json({ error: "Name or Number are missing" });
-  } else if (
-    phonebook.some(
-      (contact) =>
-        contact.name === req.body.name || contact.number === req.body.number
-    )
-  ) {
-    res.status(400).json({ error: "This contact already exist" });
   } else {
-    const newContact = {
-      id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
+    const newContact = new Person({
       name: req.body.name,
       number: req.body.number,
-    };
-    phonebook = phonebook.concat(newContact);
-    res.send(newContact);
+    });
+    // phonebook = phonebook.concat(newContact);
+    // res.send(newContact);
+    newContact.save().then((response) => {
+      res.json(response);
+    });
   }
 });
 
