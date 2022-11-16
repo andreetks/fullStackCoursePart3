@@ -68,6 +68,8 @@ app.delete("/api/persons/:id", (req, res, next) => {
 app.post("/api/persons", (req, res, next) => {
   if (!req.body.name || !req.body.number) {
     res.status(400).json({ error: "Name or Number are missing" });
+  } else if( req.body.name.length < 3) {
+    res.status(400).json({ error: "Name is too short."})
   } else {
     const newContact = new Person({
       name: req.body.name,
