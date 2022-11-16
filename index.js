@@ -1,6 +1,7 @@
-import express, { json } from "express";
+import express from "express";
 import morgan from "morgan";
 import cors from "cors"
+import Person from "./models/person.js"
 
 const app = express();
 
@@ -43,7 +44,9 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(phonebook);
+  Person.find({}).then((result) => {
+    res.json(result.map(person => person.toJSON()))
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
