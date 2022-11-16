@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 const url = process.env.MONGO_URL;
 
 mongoose.connect(url);
 
 const phonebookSchema = new mongoose.Schema(
   {
-    name: String,
-    number: String,
+    name: { type: String, required: true, unique: true, minLength: 3 },
+    number: { type: String, unique: true },
   },
   { versionKey: false }
 );
